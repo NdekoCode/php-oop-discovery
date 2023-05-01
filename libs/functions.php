@@ -72,3 +72,16 @@ function isConnect(): bool
 {
     return isset($_SESSION['user']);
 }
+function connectDb(): PDO
+{
+    $bdd = null;
+    try {
+        if (!$bdd) {
+
+            $bdd = new PDO("mysql:host=localhost;dbname=learn-php", "root", "7288Ndeko*");
+        }
+        return $bdd;
+    } catch (PDOException $e) {
+        debugPrint("Erreur : " . $e->getMessage());
+    }
+}

@@ -1,10 +1,13 @@
 <?php
 
 require_once (__DIR__) . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+
 $title = "Home page";
+$dbb = connectDb();
+$response = $dbb->query("SELECT * FROM jeux_video");
 loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");
-debugPrint($_SESSION)
+debugPrint($response)
 ?>
 
 <div class="p-5 rounded bg-light">
