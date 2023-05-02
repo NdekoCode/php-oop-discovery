@@ -12,6 +12,10 @@
 
                 <a href="./supervariable.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">Variable</a>
             </li>
+            <li>
+
+                <a href="./games.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">Games</a>
+            </li>
         </ul>
         <ul class="flex items-center gap-3 sm:flex-wrap md:flex-nowrap">
 

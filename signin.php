@@ -14,6 +14,8 @@ if (isNotEmpty($_POST)) {
         $_SESSION['user'] = [
             'email' => $email
         ];
+        header("Location: /profile.php", true, 303);
+        die();
     }
 }
 $title = "Login";

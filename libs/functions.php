@@ -78,7 +78,12 @@ function connectDb(): PDO
     try {
         if (!$bdd) {
 
-            $bdd = new PDO("mysql:host=localhost;dbname=learn-php", "root", "7288Ndeko*");
+            $bdd = new PDO(
+                "mysql:host=localhost;dbname=learn-php",
+                "root",
+                "7288Ndeko*",
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
         }
         return $bdd;
     } catch (PDOException $e) {

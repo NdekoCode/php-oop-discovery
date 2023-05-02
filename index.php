@@ -4,10 +4,11 @@ require_once (__DIR__) . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "f
 
 $title = "Home page";
 $dbb = connectDb();
-$response = $dbb->query("SELECT * FROM jeux_video");
+$response = $dbb->query("SELECT * FROM jeux_video LIMIT 12");
+$data = $response->fetchAll();
 loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");
-debugPrint($response)
+debugPrint($data)
 ?>
 
 <div class="p-5 rounded bg-light">
