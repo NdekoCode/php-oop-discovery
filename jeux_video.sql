@@ -1,43 +1,13 @@
--- Active: 1682778732944@@127.0.0.1@3306@learn-php
-CREATE DATABASE IF NOT EXISTS `learn-php`;
--- Base de données: `learn-php`--
-CREATE TABLE IF NOT EXISTS `users`(
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(55) NOT NULL,
-    lastName VARCHAR(55) NOT NULL,
-    pseudo VARCHAR(55) NOT NULL,
-    email VARCHAR(150) NOT NULL,
-    AGE INT NOT NULL
-) ENGINE = InnoDB CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
-INSERT INTO users(firstName, lastName, pseudo, email, age)
-VALUES(
-        "Arick",
-        "Bulakali",
-        "ndekocode@gmail.com",
-        "Kryptonic",
-        25
-    ),
-    (
-        "André",
-        "Tassy",
-        "Serial_Killer",
-        "serialkiller@unitedgamers.com",
-        16
-    ),
-    (
-        "Danny",
-        "kool",
-        "M@teo21",
-        "top_secret@siteduzero.com",
-        18
-    ),
-    (
-        "Belange",
-        "Ngolu",
-        "Bibou",
-        "bibou557@laposte.net",
-        29
-    );
+-- phpMyAdmin SQL Dump
+-- version 3.2.0.1
+-- http://www.phpmyadmin.net
+--
+-- Serveur: localhost
+-- Généré le : Sam 06 Mars 2010 à 16:26
+-- Version du serveur: 5.1.36
+-- Version de PHP: 5.3.0
+--
+-- Base de données: `learn-php`
 --
 
 -- --------------------------------------------------------
@@ -54,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `jeux_video` (
     `nbre_joueurs_max` int(11) NOT NULL DEFAULT '0',
     `commentaires` text NOT NULL,
     KEY `ID` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = `utf8mb4` AUTO_INCREMENT = 51;
+) ENGINE = MyISAM DEFAULT CHARSET = latin1 AUTO_INCREMENT = 51;
 --
 -- Contenu de la table `jeux_video`
 --
@@ -518,8 +488,3 @@ VALUES (
         1,
         'Jeu magnifique !'
     );
-CREATE TABLE IF NOT EXISTS `chat` (
-    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    pseudo VARCHAR(55) NOT NULL,
-    messages TEXT NOT NULL
-) ENGINE = InnoDB CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;

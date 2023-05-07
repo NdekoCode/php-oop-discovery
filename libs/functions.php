@@ -82,11 +82,15 @@ function connectDb(): PDO
                 "mysql:host=localhost;dbname=learn-php",
                 "root",
                 "7288Ndeko*",
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
             );
         }
+        echo "DATABASE CONNECTION IS CORRECT";
         return $bdd;
     } catch (PDOException $e) {
+
+        echo "DATABASE CONNECTION IS FAILED";
         debugPrint("Erreur : " . $e->getMessage());
+        die();
     }
 }
