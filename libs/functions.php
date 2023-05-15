@@ -1,9 +1,15 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . "config.php";
-function debugPrint(mixed $data): void
+function debugPrint(mixed ...$data): void
 {
     echo "<div><pre>";
-    print_r($data);
+    if (count($data) <= 1) {
+
+        print_r($data[0]);
+    } else {
+
+        print_r($data);
+    }
     echo "</pre></div>";
 }
 function varDumper(mixed $data): void
@@ -29,8 +35,13 @@ function salutation($name, $salutation = "Salut")
 }
 function validFieldData(string $fieldValue): string
 {
-    return trim(strip_tags($fieldValue));
+    return trim(htmlentities(strip_tags($fieldValue)));
 }
+function hasValue($value)
+{
+    return isset($value) || !empty($value);
+}
+
 function isNotEmpty($value)
 {
     return isset($value) && !empty($value);
@@ -89,8 +100,25 @@ function connectDb(): PDO
         return $bdd;
     } catch (PDOException $e) {
 
-        echo "DATABASE CONNECTION IS FAILED";
         debugPrint("Erreur : " . $e->getMessage());
+        die();
+    }
+}
+function isValidStringField($value, $length = 1): bool
+{
+    return !empty($value) && strlen($value) >= $length;
+}
+function isValidEmail($value): bool
+{
+    return filter_var($value, FILTER_VALIDATE_EMAIL) && preg_match("#^[a-z]{2,}(\w|[\-\.])*@[a-z]{2,}(\w|[\-\.])*\.[a-z]{2,5}$#", $value);
+}
+function redirect(string $path, bool $last = true, int|null $httpCode = 0)
+{
+    if ($httpCode) {
+        http_response_code($httpCode);
+    }
+    header("Location: $path", response_code: $httpCode);
+    if ($last) {
         die();
     }
 }

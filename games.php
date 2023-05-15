@@ -1,7 +1,11 @@
 <?php require_once __DIR__ . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
 $title = "Games database";
+echo time();
 $bdd = connectDb();
 $response = $bdd->query("SELECT * FROM jeux_video ORDER BY prix DESC LIMIT 12");
+$res = $bdd->query("SELECT COUNT(*) AS nbr_game,possesseur FROM jeux_video GROUP BY possesseur");
+$result = $res->fetchAll();
+debugPrint($result);
 $data = $response->fetchAll();
 loadFile("partials", "header", compact('title'));
 loadFile("partials", "navbar");

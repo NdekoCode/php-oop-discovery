@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'libs' . DIRECTORY_SEPARATOR . 'functions.php';
 $dbb = connectDb();
-$request = $dbb->query("SELECT * FROM chat ORDER BY createdAt  DESC");
+$request = $dbb->query("SELECT UPPER(pseudo) as pseudo,message FROM chat ORDER BY createdAt  DESC");
+$rq = $dbb->query("SELECT COUNT(*) nbr_chat FROM chat");
+$count = $rq->fetch();
+
 $messages = $request->fetchAll();
 if (isNotEmpty($_POST)) {
     $pseudo = validFieldData($_POST['pseudo']) ?? "";
@@ -18,6 +21,8 @@ $title = "Chat a game";
 loadFile("partials", "header", compact('title'));
 loadFile("partials", "navbar"); ?>
 <div class="container mx-auto max-w-7xl">
+    <p><strong class="font-bold"><?= $count['nbr_chat'] ?? 0 ?> Nombre de discussion</strong>
+    </p>
     <?php if ($messages) : ?>
         <?php
         foreach ($messages as $msg) : ?>
@@ -39,11 +44,11 @@ loadFile("partials", "navbar"); ?>
 
         <div class="mb-3">
             <label for="pseudo" class="block mb-1 text-base text-gray-600">Pseudo</label>
-            <input type="text" name="pseudo" id="pseudo" placeholder="Pseudo name" class="w-full px-3 py-2 text-sm transition-all duration-200 rounded shadow outline-none placeholder:text-gray-300 ring ring-transparent focus:ring-blue-100 focus:ring-offset-1">
+            <input type="text" name="pseudo" id="pseudo" placeholder="Pseudo name" class="w-full px-3 py-2 text-sm transition-all duration-200 border border-gray-200 rounded shadow outline-none placeholder:text-gray-300 ring ring-transparent focus:ring-blue-100 focus:ring-offset-1">
         </div>
         <div class="mb-3">
             <label for="message" class="block mb-1 text-base text-gray-600">Message</label>
-            <textarea type="text" name="message" id="message" placeholder="Your message" class="w-full px-3 py-2 text-sm transition-all duration-200 rounded shadow outline-none placeholder:text-gray-300 ring ring-transparent focus:ring-blue-100 focus:ring-offset-1"></textarea>
+            <textarea type="text" name="message" id="message" placeholder="Your message" class="w-full px-3 py-2 text-sm transition-all duration-200 border border-gray-200 rounded shadow outline-none placeholder:text-gray-300 ring ring-transparent focus:ring-blue-100 focus:ring-offset-1"></textarea>
         </div>
         <button type="submit" class="px-3 py-2 my-1 text-white bg-blue-600 rounded">Add game</button>
     </form>

@@ -5,17 +5,31 @@ if (isConnect()) {
     header("Location: /profile.php", true, 303);
     die();
 }
-$email = null;
-$password = null;
-if (isNotEmpty($_POST)) {
-    if (isNotEmpty($_POST['email']) && isNotEmpty($_POST['password'])) {
-        $email = validFieldData($_POST['email']);
-        $password = validFieldData($_POST['password']);
-        $_SESSION['user'] = [
-            'email' => $email
-        ];
-        header("Location: /profile.php", true, 303);
-        die();
+$validData = fn ($value) => validFieldData($value);
+if (!empty($_POST)) {
+
+    $_POST = array_map($validData, $_POST);
+    extract($_POST);
+    if (isNotEmpty($email) && isNotEmpty($password)) {
+        $dbb = connectDb();
+        $request = $dbb->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
+        $request->execute([$email]);
+        $user = $request->fetch();
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'pseudo' => $user['pseudo']
+            ];
+            redirect("/profile.php", true, 303);
+        } else {
+
+            $_SESSION['errors']['user'] = "Mot de passe ou email invalide";
+            redirect("/signin.php", true);
+        }
+    } else {
+        $_SESSION['errors']['user'] = "Email ou Mot de passe invalide";
+        redirect("/signin.php", true);
     }
 }
 $title = "Login";
@@ -24,6 +38,11 @@ loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");
 ?>
 
+<?php if (isset($_SESSION['errors']['user'])) : ?>
+    <div class="container px-3 mx-auto max-w-7xl sm:px-2">
+        <div class="p-3 text-red-600 bg-red-100 border border-red-500 rounded"><?= $_SESSION['errors']['user'] ?></div>
+    </div>
+<?php endif; ?>
 <div class="container flex items-center justify-center w-full min-h-screen">
 
     <form method="POST" enctype="multipart/form-data" class="min-w[250px] min-h-[350px] shadow-md border p-5 rounded-md">
@@ -42,3 +61,4 @@ loadFile("partials", "navbar");
 <?php
 
 loadFile("partials", "footer");
+unset($_SESSION['errors']['user']);

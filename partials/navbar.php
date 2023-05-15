@@ -30,7 +30,7 @@
                 </li>
                 <li>
 
-                    <a href="./supervariable.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">Signin</a>
+                    <a href="./signup.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">Signin</a>
                 </li>
 
             <?php else : ?>
