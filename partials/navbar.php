@@ -10,7 +10,7 @@
             </li>
             <li>
 
-                <a href="./supervariable.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">Variable</a>
+                <a href="./poo.php" class="inline-block my-3 font-medium text-gray-600 transition-colors hover:underline hover:text-gray-900">POO</a>
             </li>
             <li>
 

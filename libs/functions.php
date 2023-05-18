@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . "config.php";
 function debugPrint(mixed ...$data): void
 {
@@ -12,10 +15,15 @@ function debugPrint(mixed ...$data): void
     }
     echo "</pre></div>";
 }
-function varDumper(mixed $data): void
+function varDumper(mixed ...$data): void
 {
     echo "<div><pre>";
-    var_dump($data);
+
+    if (count($data) <= 1) {
+        var_dump($data);
+    } else {
+        var_dump($data);
+    }
     echo "</pre></div>";
 }
 function loadFile($dir, $file, $data = [])
