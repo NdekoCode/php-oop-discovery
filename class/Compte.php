@@ -28,23 +28,32 @@ class Compte
         $this->setTitulaire($titulaire);
         $this->deposer($montant);
     }
-    public function setTitulaire(string $newTitulaire): void
+    /**
+     * Modifie le nom du proprietaire de compte
+     *
+     * @param string $newTitulaire
+     * @return Compte
+     */
+    public function setTitulaire(string $newTitulaire): self
     {
         if (is_string($newTitulaire) && strlen(trim($newTitulaire) >= 2)) {
             $this->titulaire = $newTitulaire;
         }
+        return $this;
     }
-    public function setSolde($newSolde): void
+    public function setSolde($newSolde): self
     {
         if ($newSolde > 0) {
             $this->solde = $newSolde;
         }
+        return $this;
     }
-    public function setCurrency($newCurrency): void
+    public function setCurrency($newCurrency): self
     {
         if (is_string($newCurrency) && strlen(trim($newCurrency)) > 0) {
             $this->currency = $newCurrency;
         }
+        return $this;
     }
     public function getSolde(): float
     {
@@ -54,16 +63,17 @@ class Compte
     {
         return $this->currency;
     }
-    public function getTitulaire()
+    public function getTitulaire(): string
     {
         return $this->titulaire;
     }
 
-    public function deposer(float $montant)
+    public function deposer(float $montant): self
     {
         if ($montant > 0) {
             $this->solde += $montant;
         }
+        return $this;
     }
     public function viewSolde()
     {
