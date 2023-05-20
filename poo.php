@@ -1,15 +1,23 @@
 <?php
 
 require_once (__DIR__) . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+
 $title = "OPP";
+
 loadFile('class', 'Compte');
+loadFile('class', 'CompteCourant');
+loadFile('class', 'CompteEpargne');
 loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");
-$compte = new Compte("Arick", 430);
-$compte1 = new Compte("Marcos", 850);
-$compte->deposer(30);
-$compte1->retirer(840);
-varDumper($compte, $compte1);
+
+$compteCourant = new CompteCourant("Arick", 500, 200);
+$compteEpargne = new CompteEpargne("Marcos", 200);
+$compteCourant->deposer(30);
+$compteCourant->retirer(640);
+
+echo "\n Le taux d'interet est {$compteEpargne->getTauxInteret()}";
+$compteEpargne->retirer(300);
+varDumper($compteCourant, $compteEpargne);
 ?>
 
 <?php
