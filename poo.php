@@ -1,27 +1,29 @@
 <?php
 
+use App\Autoloader;
+use App\Bank\{CompteCourant, CompteEpargne};
+use App\Client\Compte;
+
 require_once (__DIR__) . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
 $title = "OPP";
 
-loadFile('class' . DS . 'Bank', 'Compte');
-loadFile('class' . DS . 'Bank', 'CompteCourant');
-loadFile('class' . DS . 'Bank', 'CompteEpargne');
-loadFile('class' . DS . 'Client', 'Compte');
 loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");
 
-use App\Client\Compte;
-use App\Bank\{CompteCourant, CompteEpargne};
+loadFile('class', 'Autoloader');
 
-$compteCourant = new CompteCourant("Arick", 500, 200);
-$compteEpargne = new CompteEpargne("Marcos", 200, 10);
-$compteClient = new Compte();
+
+Autoloader::register();
+$compteClient = new Compte("Arick", "Bulakali");
+$compteClient1 = new Compte("Arick", "Bulakali");
+$compteCourant = new CompteCourant($compteClient, 500, 200);
+$compteEpargne = new CompteEpargne($compteClient1, 200, 10);
 $compteCourant->deposer(30);
 $compteCourant->retirer(640);
 
 echo "\n Le taux d'interet est {$compteEpargne->getTauxInterets()}";
 $compteEpargne->retirer(300);
-varDumper($compteCourant, $compteEpargne, $compteClient);
+varDumper($compteCourant, $compteEpargne);
 ?>
 
 <?php

@@ -2,6 +2,8 @@
 
 namespace App\Bank;
 
+use App\Client\Compte as CompteClient;
+
 class CompteCourant extends Compte
 {
     /**
@@ -13,11 +15,11 @@ class CompteCourant extends Compte
 
     /**
      * Constructeur du compte courant
-     * @param string $titulaire Titulaire du compte
+     * @param CompteClient $titulaire Titulaire du compte
      * @param float $solde Solde du compte
      * @param int $decouvert Découvert autorisé
      */
-    public function __construct(string $titulaire, float $solde, int $decouvert = 500)
+    public function __construct(CompteClient $titulaire, float $solde, int $decouvert = 500)
     {
         // On appelle le constructeur du parent
         parent::__construct($titulaire, $solde);
