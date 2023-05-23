@@ -1,26 +1,35 @@
 <?php
 
-use function PHPSTORM_META\type;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . "config.php";
-function debugPrint(mixed ...$data): void
+/**
+ * @SuppressWarnings(PHPMD)
+ */
+
+function debugPrint(mixed ...$data, $stop = false): void
 {
     echo "<div><pre>";
     if (count($data) <= 1) {
 
         print_r($data[0]);
     } else {
-
         print_r($data);
     }
     echo "</pre></div>";
+    if ($stop) {
+        die();
+    }
 }
+/**
+ * @SuppressWarnings(PHPMD)
+ */
+
 function varDumper(mixed ...$data): void
 {
     echo "<div><pre>";
 
     if (count($data) <= 1) {
-        var_dump($data);
+        var_dump($data[0]);
     } else {
         var_dump($data);
     }
@@ -54,11 +63,13 @@ function isNotEmpty($value)
 {
     return isset($value) && !empty($value);
 }
-function validUploadFile($file, $options = [
-    "size" => 1_000_000,
-    "extensions" => ["jpeg", "jpg", "gif", "svg", "png"]
-]): bool|array
-{
+function validUploadFile(
+    $file,
+    $options = [
+        "size" => 1_000_000,
+        "extensions" => ["jpeg", "jpg", "gif", "svg", "png"]
+    ]
+): bool|array {
     if (isNotEmpty($file) && $file['error'] === 0) {
         if ($file['size'] <= $options['size']) {
             $fileInfos = pathinfo($file['name']);
@@ -82,8 +93,7 @@ function verifyAndUploadFile($file, $path = ROOT_PATH . "assets/files/")
         }
         $fileExtension = $fileInfos['extension'];
         $filePath = $path . trim($fileInfos['filename']) . uniqid() . ".$fileExtension";
-        $isUploaded = move_uploaded_file($file['tmp_name'], $filePath);
-        return $isUploaded;
+        return  move_uploaded_file($file['tmp_name'], $filePath);
     }
     return false;
 }
