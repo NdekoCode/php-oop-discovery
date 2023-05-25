@@ -6,19 +6,19 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . "config.php";
  * @SuppressWarnings(PHPMD)
  */
 
-function debugPrint(mixed ...$data, $stop = false): void
+function debugPrint(mixed ...$data): void
 {
     echo "<div><pre>";
-    if (count($data) <= 1) {
-
-        print_r($data[0]);
+    if (is_array($data)) {
+        if (count($data) <= 1) {
+            print_r($data[0]);
+        } else {
+            print_r($data);
+        }
     } else {
         print_r($data);
     }
     echo "</pre></div>";
-    if ($stop) {
-        die();
-    }
 }
 /**
  * @SuppressWarnings(PHPMD)
@@ -35,7 +35,7 @@ function varDumper(mixed ...$data): void
     }
     echo "</pre></div>";
 }
-function loadFile($dir, $file, $data = [])
+function loadFile($dir = __DIR__, $file = __FILE__, $data = [])
 {
     if ($data) {
         extract($data);

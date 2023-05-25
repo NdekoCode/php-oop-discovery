@@ -7,7 +7,7 @@ use PDOException;
 
 class Db extends PDO
 {
-    private static self $instance;
+    private static $instance;
     private function __construct()
     {
         try {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Db\Db;
+use PDOStatement;
 
 class Model extends Db
 {
@@ -19,20 +20,33 @@ class Model extends Db
      */
     protected Db $pdo;
 
+    public function findAll($all = true): PDOStatement | array| null
+    {
+        $query = $this->makeQuery("SELECT * FROM $this->table");
+        if ($query instanceof PDOStatement) {
+
+            if ($all) {
+                return $query->fetchAll();
+            }
+            return $query->fetch();
+        }
+        return [];
+    }
+
     /**
      * Execute une requete SQL
      *
      * @param string $sql la requete à executer
      * @param array $attribute Les attribus à mettre dans la requete
-     * @return void
+     * @return  PDOStatement|bool
      */
-    protected function makeQuery(string $sql, array $attributes = []): \PDOStatement|bool
+    protected function makeQuery(string $sql, array $attributes = []): PDOStatement|bool
     {
-        $this->pdo = $this->getPDO();
+        $this->pdo =  Db::getPDO();
         // On verifie si on a des attributs
         if (!empty($attributes)) {
             // Requete preparer
-            $query = $this->prepare($sql);
+            $query = $this->pdo->prepare($sql);
             $query->execute($attributes);
             return $query;
         }
