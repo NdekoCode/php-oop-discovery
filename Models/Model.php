@@ -152,10 +152,12 @@ class Model extends Db
         $values = $dataParams[0];
         $params = $dataParams[1];
 
-        $searchParam = $this->getVerifiedFieldData($this);
+        $searchParam = [$this->primaryKey => $id];
         $query = $this->findBy($searchParam, false, 'OR');
         $params['id'] = $id;
+        debugPrint($searchParam);
         if (!is_bool($query)) {
+
             $sql = "UPDATE $this->table SET $values WHERE id=:id";
             $this->makeQuery($sql, $params);
         } else {

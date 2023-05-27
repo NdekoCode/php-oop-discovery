@@ -13,7 +13,7 @@ class AnnoncesModel extends Model
 
     protected array $fillable = ['title', 'description', 'slug', 'createdAt', 'active'];
 
-    protected $verifyFields = ['title', 'description', 'slug'];
+    protected $verifyFields = ['id', 'title', 'description', 'slug'];
     public function __construct()
     {
         parent::__construct();

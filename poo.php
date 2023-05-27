@@ -17,7 +17,7 @@ Autoloader::register();
 $model = new AnnoncesModel();
 // $data = $model->find(1);
 $annonce = [
-    "title" => "Ndekocode compatibility",
+    "title" => "Bum compatibility",
     "description" => "mixed is soft-reserved since PHP 7. Until PHP 8, it is technically possible to declare a class with name mixed, and it will not raise any errors, warnings, or notices. PHPDoc standard widely used mixed as a type declaration, so it is highly unlikely that even the wildest code base out there declares a class with name mixed.",
     "active" => 1
 ];
