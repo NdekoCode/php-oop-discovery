@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Db\Db;
+use App\Libs\Validator;
 use PDOStatement;
 
 class Model extends Db
@@ -19,18 +20,59 @@ class Model extends Db
      * @var Db
      */
     protected Db $pdo;
+    public $validator;
+    public function __construct()
+    {
+        $this->validator = new Validator();
+    }
 
     public function findAll($all = true): PDOStatement | array| null
     {
         $query = $this->makeQuery("SELECT * FROM $this->table");
-        if ($query instanceof PDOStatement) {
 
-            if ($all) {
-                return $query->fetchAll();
-            }
-            return $query->fetch();
+        return $this->getStatementData($query, $all);
+    }
+
+    public function findBy(array $params, $all = true): array| bool
+    {
+        $paramsData = $this->getParams($params);
+        $strparams = $paramsData[0];
+        $params = $paramsData[1];
+        $sql = "SELECT * FROM $this->table WHERE $strparams";
+        $query = $this->makeQuery($sql, $params);
+        return $this->getStatementData($query, $all);
+    }
+
+    public function find(array |int $params): array|bool
+    {
+        $strparams = "";
+        if (is_array($params)) {
+            return $this->findBy($params, false);
         }
-        return [];
+        $strparams = "id=?";
+        $params = [$this->validator->validFieldData($params)];
+
+        $sql = "SELECT * FROM $this->table WHERE $strparams LIMIT 1";
+        $query = $this->makeQuery($sql, $params);
+        return $this->getStatementData($query, false);
+    }
+    /**
+     * Recupère les paramètres en clé valeur qu'on va utiliser dans la requete
+     *
+     * @param array $params Les paramètre de la requete
+     * @param string $separator le separateur dans la requete
+     * @return array
+     */
+    protected function getParams(array $params, string $separator = " AND "): array
+    {
+
+        $keys = [];
+        foreach ($params as $k => $val) {
+            $keys[] = "$k=:$k";
+            $params[$k] = $this->validator->validFieldData($val);
+        }
+        $strparams = implode($separator, $keys);
+        return [$strparams, $params];
     }
 
     /**
@@ -51,5 +93,16 @@ class Model extends Db
             return $query;
         }
         return $this->pdo->query($sql);
+    }
+    protected function getStatementData(PDOStatement | bool $query, $all = true): array | bool
+    {
+        if ($query instanceof PDOStatement) {
+
+            if ($all) {
+                return $query->fetchAll();
+            }
+            return $query->fetch();
+        }
+        return $query;
     }
 }

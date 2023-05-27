@@ -13,14 +13,14 @@ class Autoloader
     private static function autoload($class)
     {
         // __NAMESPACE__ : le namespace dans lequel on se trouve donc "App"
-        $class = str_replace(["\\", __NAMESPACE__], [DS, ""], $class);
-        $file = __DIR__ . "$class.php";
+        $class = str_replace(["\\", __NAMESPACE__], [DS, DS], $class);
+        $file = __DIR__ . DS . "$class.php";
         if (file_exists($file)) {
             require_once $file;
             return;
         }
 
-        debugPrint($class);
+        debugPrint($class, __DIR__, $file);
         throw new \UnexpectedValueException("File $class not found");
     }
 }

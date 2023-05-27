@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+require_once __DIR__ . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 
 if (isConnect()) {
     header("Location: /profile.php", true, 303);

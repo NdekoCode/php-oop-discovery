@@ -1,6 +1,6 @@
 <?php
 $title = "Super variable";
-require_once __DIR__ . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+require_once __DIR__ . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 
 loadFile("partials", "header", compact("title"));
 loadFile("partials", "navbar");

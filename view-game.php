@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+<?php require_once __DIR__ . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 
 $param = validFieldData($_GET['id'] ?? "");
 $game = null;

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'libs' . DIRECTORY_SEPARATOR . 'functions.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Libs' . DIRECTORY_SEPARATOR . 'functions.php';
 $dbb = connectDb();
 $request = $dbb->query("SELECT UPPER(pseudo) as pseudo,message FROM chat ORDER BY createdAt  DESC");
 $rq = $dbb->query("SELECT COUNT(*) nbr_chat FROM chat");

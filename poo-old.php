@@ -4,7 +4,7 @@ use App\Autoloader;
 use App\Bank\{CompteCourant, CompteEpargne};
 use App\Client\Compte;
 
-require_once (__DIR__) . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+require_once (__DIR__) . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 $title = "OPP";
 
 loadFile("partials", "header", compact("title"));

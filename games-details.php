@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "functions.php";
+<?php require_once __DIR__ . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 $title = "Games database";
 $param = validFieldData($_GET['user'] ?? null);
 $data = null;
