@@ -23,7 +23,9 @@ class Model extends Db
     public $validator;
     public function __construct()
     {
-        $this->validator = new Validator();
+        if ($this->validator === null) {
+            $this->validator = new Validator();
+        }
     }
 
     public function findAll($all = true): PDOStatement | array| null
@@ -38,6 +40,7 @@ class Model extends Db
         $paramsData = $this->getParams($params);
         $strparams = $paramsData[0];
         $params = $paramsData[1];
+
         $sql = "SELECT * FROM $this->table WHERE $strparams";
         $query = $this->makeQuery($sql, $params);
         return $this->getStatementData($query, $all);
