@@ -53,7 +53,6 @@ class AnnoncesModel extends Model
     public function setTitle($title)
     {
         $this->title = $title;
-
         return $this;
     }
 

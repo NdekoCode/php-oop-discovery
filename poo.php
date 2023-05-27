@@ -14,8 +14,11 @@ loadFile("/", 'Autoloader');
 
 Autoloader::register();
 
-$annonce = new AnnoncesModel();
-$data = $annonce->find(2);
+$model = new AnnoncesModel();
+$data = $model->find(1);
+$annonce = $model->setTitle("Nouvelle annonce")
+    ->setDescription("Le future grand developpeur est en train de sonner à la porte")
+    ->setActive(1);
 varDumper($data);
 
 ?>

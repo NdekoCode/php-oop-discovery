@@ -15,49 +15,109 @@ class Model extends Db
      */
     protected string $table;
     /**
-     * Instance de Db
+     * Instance de Db pour l'interaction avec PDO et la base de données
      *
      * @var Db
      */
     protected Db $pdo;
-    public $validator;
+
+    /**
+     * Pour la limite des données à avoir
+     *
+     * @var integer
+     */
+    protected int $limit;
+    protected string $primaryKey = 'id';
+    /**
+     * Validateur des donnée
+     *
+     * @var Validator
+     */
+    public Validator $validator;
     public function __construct()
     {
-        if ($this->validator === null) {
-            $this->validator = new Validator();
-        }
+        $this->validator = new Validator();
     }
+    /**
+     * Generate an SQL request for SELECT
+     *
+     * @param array $options
+     * @return string
+     */
+    protected function selectQuery(array $options =
+    [
+        "order" => "",
+        "fields" => "",
+        "params" => [],
+        "separator" => "AND",
+        "limit" => 0
+    ]): string
+    {
 
+
+        $sql = "SELECT";
+        if (@$this->validator->isNotEmpty($options['fields'])) {
+            $sql .= " " . implode(", ", $options['fields']);
+        } else {
+            $sql .= " *";
+        }
+        $sql .= " FROM $this->table";
+        if (@$this->validator->isNotEmpty($options['params'])) {
+            $strParams = "";
+            if (is_array($options['params'])) {
+                $strParams = $this->getParams($options['params'], $options['separator']);
+            } else {
+                $strParams = $options['params'];
+            }
+            $sql .= " WHERE $strParams";
+        }
+        if (@$this->validator->isNotEmpty($options['order'])) {
+            $sql .= " {$options['order']}";
+        }
+        if (@$this->validator->isNotEmpty($options['limit'])) {
+            $sql .= " LIMIT {$options['limit']}";
+        }
+
+        debugPrint($sql);
+        return trim($sql);
+    }
+    /**
+     * Get Data in the database
+     * @param string $all To get all data or a single data
+     */
     public function findAll($all = true): PDOStatement | array| null
     {
-        $query = $this->makeQuery("SELECT * FROM $this->table");
+        $sql =  $this->selectQuery();
+        $query = $this->makeQuery($sql);
 
         return $this->getStatementData($query, $all);
     }
 
+    /**
+     * Get
+     *
+     * @param array $params
+     * @param boolean $all
+     * @return array|bool
+     */
     public function findBy(array $params, $all = true): array| bool
     {
-        $paramsData = $this->getParams($params);
+        $paramsData = $this->getParamsValues($params);
         $strparams = $paramsData[0];
         $params = $paramsData[1];
 
-        $sql = "SELECT * FROM $this->table WHERE $strparams";
+        $sql = $this->selectQuery(['params' => $strparams]);
         $query = $this->makeQuery($sql, $params);
         return $this->getStatementData($query, $all);
     }
 
     public function find(array |int $params): array|bool
     {
-        $strparams = "";
-        if (is_array($params)) {
-            return $this->findBy($params, false);
+        if (!is_array($params)) {
+            $params = ["$this->primaryKey" => $params];
         }
-        $strparams = "id=?";
-        $params = [$this->validator->validFieldData($params)];
 
-        $sql = "SELECT * FROM $this->table WHERE $strparams LIMIT 1";
-        $query = $this->makeQuery($sql, $params);
-        return $this->getStatementData($query, false);
+        return $this->findBy($params, false);
     }
     /**
      * Recupère les paramètres en clé valeur qu'on va utiliser dans la requete
@@ -66,7 +126,7 @@ class Model extends Db
      * @param string $separator le separateur dans la requete
      * @return array
      */
-    protected function getParams(array $params, string $separator = " AND "): array
+    protected function getParamsValues(array $params, string $separator = " AND "): array
     {
 
         $keys = [];
@@ -76,6 +136,23 @@ class Model extends Db
         }
         $strparams = implode($separator, $keys);
         return [$strparams, $params];
+    }
+    /**
+     * Retourne the params of the request
+     *
+     * @param array $params Params of request
+     * @param string $separator The string separator in params
+     * @return string
+     */
+    public function getParams(array $params, string $separator = " AND "): string
+    {
+
+        $keys = [];
+        foreach ($params as $k => $val) {
+            $keys[] = "$k=:$k";
+        }
+        $strparams = implode($separator, $keys);
+        return $strparams;
     }
 
     /**
@@ -107,5 +184,19 @@ class Model extends Db
             return $query->fetch();
         }
         return $query;
+    }
+
+    /**
+     * Set pour la limite des données à avoir
+     *
+     * @param  integer  $limit  Pour la limite des données à avoir
+     *
+     * @return  self
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+
+        return $this;
     }
 }
