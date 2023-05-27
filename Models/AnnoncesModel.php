@@ -11,6 +11,9 @@ class AnnoncesModel extends Model
     protected string $createdAt;
     protected bool | int $active;
 
+    protected array $fillable = ['title', 'description', 'slug', 'createdAt', 'active'];
+
+    protected $verifyFields = ['title', 'description', 'slug'];
     public function __construct()
     {
         parent::__construct();
@@ -52,7 +55,9 @@ class AnnoncesModel extends Model
      */
     public function setTitle($title)
     {
+
         $this->title = $title;
+        $this->setSlug($title);
         return $this;
     }
 
@@ -71,7 +76,7 @@ class AnnoncesModel extends Model
      */
     public function setSlug($slug)
     {
-        $this->slug = $slug;
+        $this->slug = $this->slugify($slug);
 
         return $this;
     }
@@ -132,6 +137,30 @@ class AnnoncesModel extends Model
     public function setActive($active)
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get fillable data it means the data to be modified
+     *
+     * @return  array
+     */
+    public function getFillable()
+    {
+        return $this->fillable;
+    }
+
+    /**
+     * Set fillable data it means the data to be modified
+     *
+     * @param  array  $fillable  Fillable data it means the data to be modified
+     *
+     * @return  self
+     */
+    public function setFillable(array $fillable)
+    {
+        $this->fillable = $fillable;
 
         return $this;
     }

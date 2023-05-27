@@ -20,7 +20,6 @@ class Model extends Db
      * @var Db
      */
     protected Db $pdo;
-
     /**
      * Pour la limite des données à avoir
      *
@@ -28,6 +27,28 @@ class Model extends Db
      */
     protected int $limit;
     protected string $primaryKey = 'id';
+
+    /**
+     * Fillable keys it means the keys to be modified
+     *
+     * @var array
+     */
+    protected array $fillable = [];
+
+    /**
+     * Fillable data it means the data to be modified
+     *
+     * @var array
+     */
+    protected array $fillableData = [];
+
+    /**
+     * field Tobe Verified for testing if it exists in table
+     *
+     * @var array
+     */
+    protected $verifyFields = [];
+
     /**
      * Validateur des donnée
      *
@@ -54,32 +75,77 @@ class Model extends Db
     ]): string
     {
 
-
         $sql = "SELECT";
+
         if (@$this->validator->isNotEmpty($options['fields'])) {
             $sql .= " " . implode(", ", $options['fields']);
         } else {
             $sql .= " *";
         }
+
         $sql .= " FROM $this->table";
+
         if (@$this->validator->isNotEmpty($options['params'])) {
             $strParams = "";
+
             if (is_array($options['params'])) {
                 $strParams = $this->getParams($options['params'], $options['separator']);
             } else {
                 $strParams = $options['params'];
             }
+
             $sql .= " WHERE $strParams";
         }
+
         if (@$this->validator->isNotEmpty($options['order'])) {
             $sql .= " {$options['order']}";
         }
+
         if (@$this->validator->isNotEmpty($options['limit'])) {
             $sql .= " LIMIT {$options['limit']}";
         }
 
-        debugPrint($sql);
         return trim($sql);
+    }
+
+    public function create(Model|array $attributes = [])
+    {
+        $params = [];
+        if (!$attributes) {
+            $attributes = $this;
+        }
+        foreach ($attributes as $key => $v) {
+            if (in_array($key, $this->fillable) && $v) {
+                $params[$key] = $this->validator->validFieldData($v);
+            }
+        }
+
+        $dataParams = $this->getParamsValues($params, ', ', true);
+        $values = $dataParams[0];
+        $params = $dataParams[1];
+
+        $keys = implode(', ', array_keys($params));
+        $searchParam = $this->getVerifiedFieldData($this);
+        $query = $this->findBy($searchParam, false, 'OR');
+
+        if (is_bool($query)) {
+            $sql = "INSERT INTO $this->table($keys) VALUES($values)";
+            $this->makeQuery($sql, $params);
+        } else {
+            debugPrint("La donnée existe déjà");
+        }
+    }
+
+    protected function getVerifiedFieldData(array|Model $params): array
+    {
+        $verifyDataFields = [];
+        foreach ($params as $key => $v) {
+
+            if (in_array($key, $this->verifyFields) && $v) {
+                $verifyDataFields[$key] = $this->validator->validFieldData($v);
+            }
+        }
+        return $verifyDataFields;
     }
     /**
      * Get Data in the database
@@ -92,6 +158,20 @@ class Model extends Db
 
         return $this->getStatementData($query, $all);
     }
+    public function hydrateData(Model |array $data): self
+    {
+
+        foreach ($data as $key => $v) {
+            if (in_array($key, $this->fillable) && $v) {
+                $this->fillableData[$key] = $this->validator->validFieldData($v);
+                $method = "set" . ucfirst(strval($key));
+                if (method_exists($this, $method)) {
+                    $this->$method($this->validator->validFieldData($v));
+                }
+            }
+        }
+        return $this;
+    }
 
     /**
      * Get
@@ -100,11 +180,12 @@ class Model extends Db
      * @param boolean $all
      * @return array|bool
      */
-    public function findBy(array $params, $all = true): array| bool
+    public function findBy(array $params, $all = true, string $separator = 'AND'): array| bool
     {
-        $paramsData = $this->getParamsValues($params);
+        $paramsData = $this->getParamsValues($params, $separator);
         $strparams = $paramsData[0];
         $params = $paramsData[1];
+        debugPrint($params);
 
         $sql = $this->selectQuery(['params' => $strparams]);
         $query = $this->makeQuery($sql, $params);
@@ -126,17 +207,23 @@ class Model extends Db
      * @param string $separator le separateur dans la requete
      * @return array
      */
-    protected function getParamsValues(array $params, string $separator = " AND "): array
+    protected function getParamsValues(array $params, string $separator = "AND", $insert = false): array
     {
-
+        $separator = " $separator ";
         $keys = [];
+
         foreach ($params as $k => $val) {
-            $keys[] = "$k=:$k";
+            if ($insert) {
+                $keys[] = ":$k";
+            } else {
+                $keys[] = "$k=:$k";
+            }
             $params[$k] = $this->validator->validFieldData($val);
         }
         $strparams = implode($separator, $keys);
         return [$strparams, $params];
     }
+
     /**
      * Retourne the params of the request
      *
@@ -151,8 +238,7 @@ class Model extends Db
         foreach ($params as $k => $val) {
             $keys[] = "$k=:$k";
         }
-        $strparams = implode($separator, $keys);
-        return $strparams;
+        return implode($separator, $keys);
     }
 
     /**
@@ -183,6 +269,7 @@ class Model extends Db
             }
             return $query->fetch();
         }
+
         return $query;
     }
 
@@ -198,5 +285,10 @@ class Model extends Db
         $this->limit = $limit;
 
         return $this;
+    }
+    public function slugify(string $value): string
+    {
+        $value = $this->validator->validFieldData($value);
+        return strtolower(trim(preg_replace("/\W+/i", '-', $value), '-'));
     }
 }

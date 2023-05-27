@@ -7,7 +7,7 @@ class Validator
 
     public function validFieldData(string $fieldValue): string
     {
-        return trim(htmlentities(strip_tags($fieldValue)));
+        return trim(htmlspecialchars(strip_tags($fieldValue)));
     }
 
     public function hasValue($value): bool
