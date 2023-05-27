@@ -47,7 +47,7 @@ class Model extends Db
      *
      * @var array
      */
-    protected $verifyFields = [];
+    protected array $verifyFields = [];
 
     /**
      * Validateur des donnée

@@ -1,7 +1,7 @@
 <?php
 
 use App\Autoloader;
-use App\Models\AnnoncesModel;
+use App\Models\UsersModel;
 
 require_once (__DIR__) . DIRECTORY_SEPARATOR . "Libs" . DIRECTORY_SEPARATOR . "functions.php";
 $title = "OPP";
@@ -14,7 +14,7 @@ loadFile("/", 'Autoloader');
 
 Autoloader::register();
 
-$model = new AnnoncesModel();
+$model = new UsersModel();
 // $data = $model->find(1);
 $annonce = [
     "title" => "compatibility Javascript ",
@@ -22,7 +22,7 @@ $annonce = [
     "active" => 0
 ];
 // $model->hydrateData($annonce);
-$model->delete(5);
+// $model->delete(5);
 
 varDumper($model);
 
