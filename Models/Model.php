@@ -108,17 +108,17 @@ class Model extends Db
         return trim($sql);
     }
 
-    public function create(Model|array $attributes = [])
+    public function create(Model|array $attributes = [], $hydate = false)
     {
         $params = [];
-        if (!$attributes) {
+        if (empty($attributes)) {
             $attributes = $this;
         }
-        foreach ($attributes as $key => $v) {
-            if (in_array($key, $this->fillable) && $v) {
-                $params[$key] = $this->validator->validFieldData($v);
-            }
+
+        if ($hydate) {
+            $this->hydrateData($attributes);
         }
+        $params = $this->fillableData;
 
         $dataParams = $this->getParamsValues($params, ', ', true);
         $values = $dataParams[0];
@@ -136,6 +136,32 @@ class Model extends Db
         }
     }
 
+    public function update(int $id, Model|array $attributes = [], $hydate = false)
+    {
+        $params = [];
+        if (empty($attributes)) {
+            $attributes = $this;
+        }
+
+        if ($hydate) {
+            $this->hydrateData($attributes);
+        }
+        $params = $this->fillableData;
+
+        $dataParams = $this->getParamsValues($params, ',', false);
+        $values = $dataParams[0];
+        $params = $dataParams[1];
+
+        $searchParam = $this->getVerifiedFieldData($this);
+        $query = $this->findBy($searchParam, false, 'OR');
+        $params['id'] = $id;
+        if (!is_bool($query)) {
+            $sql = "UPDATE $this->table SET $values WHERE id=:id";
+            $this->makeQuery($sql, $params);
+        } else {
+            debugPrint("La donnée n'existe déjà");
+        }
+    }
     protected function getVerifiedFieldData(array|Model $params): array
     {
         $verifyDataFields = [];
@@ -163,16 +189,24 @@ class Model extends Db
 
         foreach ($data as $key => $v) {
             if (in_array($key, $this->fillable) && $v) {
-                $this->fillableData[$key] = $this->validator->validFieldData($v);
                 $method = "set" . ucfirst(strval($key));
                 if (method_exists($this, $method)) {
-                    $this->$method($this->validator->validFieldData($v));
+                    $v = $this->validator->validFieldData($v);
+                    $this->$method($v);
                 }
             }
         }
+        $this->fillFillable();
         return $this;
     }
-
+    protected function fillFillable()
+    {
+        foreach ($this as $key => $value) {
+            if (in_array($key, $this->fillable) && $value) {
+                $this->fillableData[$key] = $value;
+            }
+        }
+    }
     /**
      * Get
      *
@@ -185,7 +219,6 @@ class Model extends Db
         $paramsData = $this->getParamsValues($params, $separator);
         $strparams = $paramsData[0];
         $params = $paramsData[1];
-        debugPrint($params);
 
         $sql = $this->selectQuery(['params' => $strparams]);
         $query = $this->makeQuery($sql, $params);
