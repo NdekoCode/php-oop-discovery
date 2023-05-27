@@ -135,7 +135,16 @@ class Model extends Db
             debugPrint("La donnée existe déjà");
         }
     }
-
+    public function delete(int $id)
+    {
+        $params = ['id' => $this->validator->validFieldData($id)];
+        $sql = "DELETE FROM $this->table WHERE id=:id";
+        $result = $this->makeQuery($sql, $params);
+        debugPrint($result->fetch());
+        if (!is_bool($result)) {
+            debugPrint("Données supprimer avec succés");
+        }
+    }
     public function update(int $id, Model|array $attributes = [], $hydate = false)
     {
         $params = [];
@@ -190,7 +199,7 @@ class Model extends Db
     {
 
         foreach ($data as $key => $v) {
-            if (in_array($key, $this->fillable) && $v) {
+            if (in_array($key, $this->fillable)) {
                 $method = "set" . ucfirst(strval($key));
                 if (method_exists($this, $method)) {
                     $v = $this->validator->validFieldData($v);
@@ -204,7 +213,7 @@ class Model extends Db
     protected function fillFillable()
     {
         foreach ($this as $key => $value) {
-            if (in_array($key, $this->fillable) && $value) {
+            if (in_array($key, $this->fillable)) {
                 $this->fillableData[$key] = $value;
             }
         }
