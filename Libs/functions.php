@@ -61,22 +61,27 @@ function hasValue($value)
 
 function isNotEmpty($value)
 {
-    return isset($value) && !empty($value);
+    if (isset($value)) {
+
+        return !empty($value);
+    }
+    return false;
 }
 function validUploadFile(
     $file,
-    $options = [
+    $options = []
+): bool|array {
+    $options = array_merge([
         "size" => 1_000_000,
         "extensions" => ["jpeg", "jpg", "gif", "svg", "png"]
-    ]
-): bool|array {
+    ], $options);
     if (isNotEmpty($file) && $file['error'] === 0) {
         if ($file['size'] <= $options['size']) {
             $fileInfos = pathinfo($file['name']);
             if (isNotEmpty($fileInfos) && isset($fileInfos['extension'])) {
 
-                $extension_upload = $fileInfos['extension'];
-                if (in_array($extension_upload, $options['extensions'])) {
+                $extensionUpload = $fileInfos['extension'];
+                if (in_array($extensionUpload, $options['extensions'])) {
                     return $fileInfos;
                 }
             }
@@ -84,40 +89,42 @@ function validUploadFile(
     }
     return false;
 }
-function verifyAndUploadFile($file, $path = ROOT_PATH . "assets/files/")
+function verifyAndUploadFile($file, $path = ROOT_PATH . "assets/files/", $publicDir = true)
 {
     $fileInfos = validUploadFile($file);
+    $permissionDir = $publicDir ? 0777 : 0775;
+
     if (isNotEmpty($fileInfos)) {
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        if (is_dir($path) && !is_writeable($path)) {
+            chmod($path, $publicDir ? 0777 : 0776);
+        } elseif (!is_dir($path)) {
+            mkdir($path, $permissionDir, true);
         }
         $fileExtension = $fileInfos['extension'];
-        $filePath = $path . trim($fileInfos['filename']) . uniqid() . ".$fileExtension";
+        $filePath = $path . DS . trim($fileInfos['filename']) . uniqid() . ".$fileExtension";
         return  move_uploaded_file($file['tmp_name'], $filePath);
     }
     return false;
 }
 function isConnect(): bool
 {
-    return isset($_SESSION['user']);
+    return isNotEmpty($_SESSION['user']);
 }
 function connectDb(): PDO
 {
     $bdd = null;
     try {
-        if (!$bdd) {
+        if (!isNotEmpty($bdd)) {
 
             $bdd = new PDO(
-                "mysql:host=localhost;dbname=learn-php",
-                "root",
-                "7288Ndeko*",
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+                DNS,
+                DB_USER,
+                DB_PASS,
+                DB_OPTIONS
             );
         }
-        echo "DATABASE CONNECTION IS CORRECT";
         return $bdd;
     } catch (PDOException $e) {
-
         debugPrint("Erreur : " . $e->getMessage());
         die();
     }

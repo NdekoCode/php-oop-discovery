@@ -4,7 +4,6 @@ $param = validFieldData($_GET['id'] ?? "");
 $game = null;
 $title = null;
 $bdd = connectDb();
-echo $param;
 if (!empty($param)) {
     $request = $bdd->prepare("SELECT * FROM jeux_video WHERE ID=? LIMIT 1");
     $request->execute([$param]);

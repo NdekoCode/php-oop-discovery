@@ -65,19 +65,18 @@ class Model extends Db
      * @param array $options
      * @return string
      */
-    protected function selectQuery(array $options =
-    [
-        "order" => "",
-        "fields" => "",
-        "params" => [],
-        "separator" => "AND",
-        "limit" => 0
-    ]): string
+    protected function selectQuery(array $options = []): string
     {
-
+        $options = array_merge([
+            "order" => "",
+            "fields" => "",
+            "params" => [],
+            "separator" => "AND",
+            "limit" => 0
+        ], $options);
         $sql = "SELECT";
 
-        if (@$this->validator->isNotEmpty($options['fields'])) {
+        if ($this->validator->isNotEmpty($options['fields'])) {
             $sql .= " " . implode(", ", $options['fields']);
         } else {
             $sql .= " *";

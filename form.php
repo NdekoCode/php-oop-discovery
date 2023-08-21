@@ -7,7 +7,7 @@ $total = 0;
 $salutation = salutation(salutation: "Bonsoir", name: "Arick");
 if (isNotEmpty($_FILES)) {
     $filesData = $_FILES;
-    $testFile = verifyAndUploadFile($_FILES['avatar']);
+    $testFile = verifyAndUploadFile($_FILES['avatar'], ROOT_PATH . 'public/images');
     if ($testFile) {
         debugPrint("File uploaded successfully");
     } else {

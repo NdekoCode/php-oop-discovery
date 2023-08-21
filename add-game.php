@@ -4,8 +4,8 @@ if (isNotEmpty($_POST)) {
     $nom = validFieldData($_POST['game-name']) ?? "";
     $possesseur = validFieldData($_POST['game-possesor'])  ?? "";
     $console = validFieldData($_POST['console-name'])  ?? "";
-    $prix = (float) validFieldData($_POST['price'])  ?? 0;
-    $nbre_joueurs_max = (float)validFieldData($_POST['max-number-gamer'])  ?? 0;
+    $prix = ((float) validFieldData($_POST['price']))  ?? 0;
+    $nbre_joueurs_max = ((float)validFieldData($_POST['max-number-gamer']))  ?? 0;
     $commentaires = validFieldData($_POST['comment'])  ?? "";
     $schema = compact('nom', 'possesseur', 'console', 'prix', 'nbre_joueurs_max', 'commentaires', 'commentaires');
     $bdd = connectDb();

@@ -8,7 +8,7 @@ class UsersModel extends Model
     protected string $pseudo;
     protected string $email;
     protected string $password;
-    protected array $fillable = ['email', 'pseudo', 'password'];
+    protected array $fillable = ['email', 'pseudo', 'password', 'active'];
     protected array $verifyFields = ['email', 'id'];
     public function __construct()
     {
@@ -91,7 +91,7 @@ class UsersModel extends Model
      */
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_ARGON2I);
 
         return $this;
     }

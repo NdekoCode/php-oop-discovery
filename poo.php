@@ -15,14 +15,15 @@ loadFile("/", 'Autoloader');
 Autoloader::register();
 
 $model = new UsersModel();
+
 // $data = $model->find(1);
-$annonce = [
-    "title" => "compatibility Javascript ",
-    "description" => "Javascript is soft-reserved since PHP 7. Until PHP 8, it is technically possible to declare a class with name mixed, and it will not raise any errors, warnings, or notices. PHPDoc standard widely used mixed as a type declaration, so it is highly unlikely that even the wildest code base out there declares a class with name mixed.",
-    "active" => 0
+$user = [
+    "pseudo" => "Terry",
+    "email" => "atuny0@sohu.com",
+    "password" => "9uQFF1Lh"
 ];
-// $model->hydrateData($annonce);
-// $model->delete(5);
+$model->hydrateData($user);
+$model->create();
 
 varDumper($model);
 
