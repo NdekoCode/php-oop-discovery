@@ -17,6 +17,9 @@ class Validator
 
     public function isNotEmpty($value): bool
     {
-        return isset($value) && !empty($value);
+        if (isset($value)) {
+            return !empty($value);
+        }
+        return false;
     }
 }

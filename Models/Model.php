@@ -84,7 +84,7 @@ class Model extends Db
 
         $sql .= " FROM $this->table";
 
-        if (@$this->validator->isNotEmpty($options['params'])) {
+        if ($this->validator->isNotEmpty($options['params'])) {
             $strParams = "";
 
             if (is_array($options['params'])) {
@@ -96,11 +96,11 @@ class Model extends Db
             $sql .= " WHERE $strParams";
         }
 
-        if (@$this->validator->isNotEmpty($options['order'])) {
-            $sql .= " {$options['order']}";
+        if ($this->validator->isNotEmpty($options['order'])) {
+            $sql .= " ORDER BY {$options['order']}";
         }
 
-        if (@$this->validator->isNotEmpty($options['limit'])) {
+        if ($this->validator->isNotEmpty($options['limit'])) {
             $sql .= " LIMIT {$options['limit']}";
         }
 
